@@ -26,10 +26,18 @@ struct Args {
 }
 
 fn main() {
-    let args = Args::parse();
+    let args: Args = Args::parse();
 
-    let colnames: Vec<String> = args.columns.split(',').map(|s| s.to_string()).collect();
-    let ranges: Vec<String> = args.ranges.split(',').map(|s| s.to_string()).collect();
+    let colnames: Vec<String> = args
+        .columns
+        .split(',')
+        .map(|s: &str| s.to_string())
+        .collect();
+    let ranges: Vec<String> = args
+        .ranges
+        .split(',')
+        .map(|s: &str| s.to_string())
+        .collect();
 
     println!("{:?}", colnames);
     println!("{:?}", ranges);
