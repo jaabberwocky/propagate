@@ -40,14 +40,14 @@ impl Dataset {
 }
 
 #[derive(Debug)]
-pub struct Column {
+struct Column {
     name: String,
     min: ColumnDataType,
     max: ColumnDataType,
 }
 
 #[derive(Debug)]
-pub enum ColumnDataType {
+enum ColumnDataType {
     Float(f32),
     Int(i32),
 }
