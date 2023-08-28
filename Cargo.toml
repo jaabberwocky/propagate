@@ -6,6 +6,12 @@ about = "data generation tool"
 author = "tobias@tobias.dev"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+name = "propagate"
+path = "src/main.rs"
 
 [dependencies]
 clap = { version = "4.4.0", features = ["derive"] }
