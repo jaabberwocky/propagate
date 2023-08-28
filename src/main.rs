@@ -24,7 +24,7 @@ struct Args {
     #[arg(short, long, default_value = "data.csv", help = "Output file name")]
     output: String,
 
-    #[arg(short, long, default_value = ",", help = "Seperator for output file")]
+    #[arg(short, long, default_value = ", ", help = "Seperator for output file")]
     sep: String,
 }
 
@@ -45,7 +45,7 @@ fn main() {
     println!("{:?}", colnames);
     println!("{:?}", ranges);
 
-    let dataset: Dataset = Dataset::build(colnames, ranges, args.num_rows, args.sep);
-    let generated_dataset: Vec<String> = dataset.generate_dataset();
-    println!("{:?}", generated_dataset);
+    let dataset: Dataset = Dataset::build(colnames, ranges, args.num_rows, args.sep, args.output);
+    println!("{:?}", dataset);
+    dataset.generate_dataset();
 }
