@@ -1,4 +1,5 @@
 use clap::Parser;
+use propagate::Dataset;
 
 #[derive(Debug, Parser)]
 #[command(
@@ -10,18 +11,30 @@ struct Args {
     #[arg(short, long, help = "Column names to generate")]
     columns: String,
 
-    #[arg(short, long, default_value_t = 50)]
-    rows: u8,
+    #[arg(
+        short,
+        long,
+        help = "Ranges for each column separated by comma (e.g. 0:100,5:25))"
+    )]
+    ranges: String,
 
-    #[arg(short, long, default_value = "data.csv")]
+    #[arg(short, long, default_value_t = 50, help = "Number of rows to generate")]
+    num_rows: i32,
+
+    #[arg(short, long, default_value = "data.csv", help = "Output file name")]
     output: String,
 }
 
 fn main() {
     let args = Args::parse();
 
-    let colnames: Vec<&str> = args.columns.split(',').collect();
-    for col in colnames {
-        println!("{}", col);
-    }
+    let colnames: Vec<String> = args.columns.split(',').map(|s| s.to_string()).collect();
+    let ranges: Vec<String> = args.ranges.split(',').map(|s| s.to_string()).collect();
+
+    println!("{:?}", colnames);
+    println!("{:?}", ranges);
+
+    let dataset: Dataset = Dataset::build(colnames, ranges, args.num_rows);
+
+    println!("{:?}", dataset);
 }
