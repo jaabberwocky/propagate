@@ -6,7 +6,7 @@ use std::fs::File;
 #[derive(Debug)]
 pub struct Dataset {
     columns: Vec<Column>,
-    rows: i32,
+    num_rows: i32,
     sep: String,
     output: String,
 }
@@ -14,12 +14,19 @@ pub struct Dataset {
 impl Dataset {
     pub fn build(
         column_names: Vec<String>,
-        ranges: Vec<String>,
+        mut ranges: Vec<String>,
         rows: i32,
         sep: String,
         output: String,
     ) -> Self {
-        Dataset::check_args_length(&column_names, &ranges);
+        match Dataset::check_correct_args_length(&column_names, &ranges) {
+            DatasetMode::Default => (),
+            DatasetMode::FirstRange => {
+                let first_range = &ranges[0];
+                let default_ranges = Dataset::create_default_ranges(&column_names, first_range);
+                ranges = default_ranges;
+            }
+        }
 
         let mut columns: Vec<Column> = Vec::new();
         for (i, name) in column_names.iter().enumerate() {
@@ -34,8 +41,8 @@ impl Dataset {
         }
         Dataset {
             columns,
-            rows,
-            sep,
+            num_rows: rows,
+            sep: sep.trim().to_string(),
             output,
         }
     }
@@ -48,11 +55,25 @@ impl Dataset {
         (min, max)
     }
 
-    fn check_args_length(column_names: &Vec<String>, ranges: &Vec<String>) {
+    fn create_default_ranges(column_names: &Vec<String>, first_range: &str) -> Vec<String> {
+        let mut default_ranges: Vec<String> = Vec::new();
+        let (min, max) = Dataset::parse_range(first_range);
+        for _ in 0..column_names.len() {
+            default_ranges.push(format!("{}:{}", min, max));
+        }
+        default_ranges
+    }
+
+    fn check_correct_args_length(column_names: &Vec<String>, ranges: &Vec<String>) -> DatasetMode {
         match column_names.len() {
-            x if x < ranges.len() => panic!("Number of columns less than number of ranges"),
-            x if x > ranges.len() => panic!("Number of columns greater than number of ranges"),
-            _ => (),
+            x if x < ranges.len() => {
+                panic!("Columns provided are less than number of ranges provider");
+            }
+            x if x > ranges.len() => {
+                println!("Ranges provided are less than number of columns, using first range for all columns");
+                DatasetMode::FirstRange
+            }
+            _ => DatasetMode::Default,
         }
     }
 
@@ -63,7 +84,7 @@ impl Dataset {
         let column_header: Vec<String> = self.columns.iter().map(|c| c.name.clone()).collect();
         generated_dataset.push(column_header.join(&self.sep));
 
-        for _ in 0..self.rows {
+        for _ in 0..self.num_rows {
             let mut row: Vec<String> = Vec::new();
 
             for column in &self.columns {
@@ -106,4 +127,9 @@ struct Column {
 #[derive(Debug)]
 enum ColumnDataType {
     Int(i32),
+}
+
+enum DatasetMode {
+    Default,
+    FirstRange,
 }
