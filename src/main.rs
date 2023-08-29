@@ -42,9 +42,6 @@ fn main() {
         .map(|s: &str| s.to_string())
         .collect();
 
-    println!("{:?}", colnames);
-    println!("{:?}", ranges);
-
     let dataset: Dataset = Dataset::build(colnames, ranges, args.num_rows, args.sep, args.output);
     println!("{:?}", dataset);
     dataset.generate_dataset();
