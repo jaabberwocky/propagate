@@ -141,6 +141,7 @@ pub mod column;
 
 #[cfg(test)]
 mod tests {
+
     use super::*;
 
     #[test]
@@ -210,5 +211,14 @@ mod tests {
 
         assert_eq!(mode1, DatasetMode::Default);
         assert_eq!(mode2, DatasetMode::FirstRange);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_cols_less_than_ranges() {
+        let column_names = vec!["Column1".to_string()];
+        let ranges = vec!["1:10".to_string(), "20:30".to_string()];
+
+        let _ = Dataset::check_correct_args_length(&column_names, &ranges);
     }
 }
