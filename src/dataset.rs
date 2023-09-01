@@ -114,7 +114,7 @@ impl Dataset {
 
         writer.flush()?;
         println!(
-            "Successfully {} wrote to file {}",
+            "Successfully wrote {} rows to file {}",
             &self.num_rows, &self.output
         );
         Ok(())
