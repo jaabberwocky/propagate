@@ -30,7 +30,7 @@ impl Column {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum ColumnDataType {
     Int(i32),
     Float(f32),
@@ -45,6 +45,7 @@ impl fmt::Display for ColumnDataType {
     }
 }
 
+#[derive(Debug, PartialEq)]
 pub enum DatasetMode {
     Default,
     FirstRange,
