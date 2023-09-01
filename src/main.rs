@@ -14,7 +14,7 @@ use propagate::dataset::Dataset;
     P      R   R   OOO   P    A   A  GGG  A   A  T   EEEE
     =====================================================
 
-    Propagate: a simple synthetic data generator."
+    Propagate: a simple data generator."
 )]
 struct Args {
     #[arg(short, long, help = "Column names to generate")]

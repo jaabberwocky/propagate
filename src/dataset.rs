@@ -31,13 +31,10 @@ impl Dataset {
 
         let mut columns: Vec<Column> = Vec::new();
         for (i, name) in column_names.iter().enumerate() {
-            let (min, max) = Dataset::parse_range(&ranges[i]);
+            let (min, max) = Dataset::parse_range(&ranges[i]).unwrap();
+            println!("{:?}", (&min, &max));
 
-            let column = Column {
-                name: name.to_string(),
-                min: ColumnDataType::Int(min),
-                max: ColumnDataType::Int(max),
-            };
+            let column = Column::new(name.to_string(), min, max);
             columns.push(column);
         }
         Dataset {
@@ -48,17 +45,26 @@ impl Dataset {
         }
     }
 
-    fn parse_range(range: &str) -> (i32, i32) {
+    fn parse_range(range: &str) -> Result<(ColumnDataType, ColumnDataType), &'static str> {
         let range: Vec<&str> = range.split(':').collect();
-        let min = range[0].parse::<i32>().expect("Failed to parse min value");
-        let max = range[1].parse::<i32>().expect("Failed to parse min value");
-
-        (min, max)
+        match range[0].parse::<i32>() {
+            Ok(_) => {
+                let min = range[0].parse::<i32>().expect("Failed to parse min value");
+                let max = range[1].parse::<i32>().expect("Failed to parse min value");
+                Ok((ColumnDataType::Int(min), ColumnDataType::Int(max)))
+            }
+            Err(_) => {
+                let min = range[0].parse::<f32>().expect("Failed to parse min value");
+                let max = range[1].parse::<f32>().expect("Failed to parse min value");
+                Ok((ColumnDataType::Float(min), ColumnDataType::Float(max)))
+            }
+        }
     }
 
     fn create_default_ranges(column_names: &Vec<String>, first_range: &str) -> Vec<String> {
         let mut default_ranges: Vec<String> = Vec::new();
-        let (min, max) = Dataset::parse_range(first_range);
+        let (min, max) = Dataset::parse_range(first_range).unwrap();
+
         for _ in 0..column_names.len() {
             default_ranges.push(format!("{}:{}", min, max));
         }
@@ -82,17 +88,27 @@ impl Dataset {
         let mut generated_dataset: Vec<String> = Vec::new();
 
         // add column names
-        let column_header: Vec<String> = self.columns.iter().map(|c| c.name.clone()).collect();
+        let column_header: Vec<String> =
+            self.columns.iter().map(|c| c.get_name().clone()).collect();
         generated_dataset.push(column_header.join(&self.sep));
 
         for _ in 0..self.num_rows {
             let mut row: Vec<String> = Vec::new();
 
             for column in &self.columns {
-                let ColumnDataType::Int(min) = &column.min;
-                let ColumnDataType::Int(max) = &column.max;
-                let value = rand::thread_rng().gen_range(*min..=*max).to_string();
-                row.push(value);
+                if let (ColumnDataType::Float(min), ColumnDataType::Float(max)) =
+                    (&column.get_min(), &column.get_max())
+                {
+                    let value = rand::thread_rng().gen_range(*min..=*max).to_string();
+                    row.push(value);
+                    continue;
+                }
+                if let (ColumnDataType::Int(min), ColumnDataType::Int(max)) =
+                    (&column.get_min(), &column.get_max())
+                {
+                    let value = rand::thread_rng().gen_range(*min..=*max).to_string();
+                    row.push(value);
+                }
             }
             generated_dataset.push(row.join(&self.sep));
         }
