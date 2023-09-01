@@ -174,7 +174,7 @@ mod tests {
     fn test_parse_range() {
         let range1 = "1:10";
         let range2 = "2.5:5.5";
-        let range3: &str = "100:1000.5";
+        let range3 = "100:1000.5";
 
         let parsed_range1 = Dataset::parse_range(range1).unwrap();
         let parsed_range2 = Dataset::parse_range(range2).unwrap();
@@ -204,6 +204,48 @@ mod tests {
         assert_eq!(default_ranges.len(), 2);
         assert_eq!(default_ranges[0], "1:10");
         assert_eq!(default_ranges[1], "1:10");
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_min_less_than_max() {
+        let min = ColumnDataType::Int(5);
+        let max = ColumnDataType::Int(1);
+        let name: &str = "Column1";
+
+        let _ = Column::new(name.to_string(), min, max);
+    }
+
+    #[test]
+    fn test_column_creation_int() {
+        let min = ColumnDataType::Int(1);
+        let max = ColumnDataType::Int(10);
+
+        let min_test = ColumnDataType::Int(1);
+        let max_test = ColumnDataType::Int(10);
+        let name: &str = "Column1";
+
+        let column = Column::new(name.to_string(), min, max);
+
+        assert_eq!(column.get_name(), &name.to_string());
+        assert_eq!(column.get_min(), &min_test);
+        assert_eq!(column.get_max(), &max_test);
+    }
+
+    #[test]
+    fn test_column_creation_float() {
+        let min = ColumnDataType::Float(1.0);
+        let max = ColumnDataType::Float(10.0);
+        let name: &str = "Column1";
+
+        let min_test = ColumnDataType::Float(1.0);
+        let max_test = ColumnDataType::Float(10.0);
+
+        let column = Column::new(name.to_string(), min, max);
+
+        assert_eq!(column.get_name(), &name.to_string());
+        assert_eq!(column.get_min(), &min_test);
+        assert_eq!(column.get_max(), &max_test);
     }
 
     #[test]

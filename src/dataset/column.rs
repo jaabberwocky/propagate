@@ -14,6 +14,11 @@ impl Column {
             (ColumnDataType::Float(_), ColumnDataType::Float(_)) => {}
             _ => panic!("Column min and max must be of the same type"),
         }
+
+        match min < max {
+            true => {}
+            false => panic!("Column min must be less than max"),
+        }
         Column { name, min, max }
     }
 
@@ -30,7 +35,7 @@ impl Column {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, PartialOrd)]
 pub enum ColumnDataType {
     Int(i32),
     Float(f32),
