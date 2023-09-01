@@ -47,13 +47,13 @@ impl Dataset {
 
     fn parse_range(range: &str) -> Result<(ColumnDataType, ColumnDataType), &'static str> {
         let range: Vec<&str> = range.split(':').collect();
-        match range[0].parse::<i32>() {
-            Ok(_) => {
+        match (range[0].parse::<i32>(), range[1].parse::<i32>()) {
+            (Ok(_), Ok(_)) => {
                 let min = range[0].parse::<i32>().expect("Failed to parse min value");
                 let max = range[1].parse::<i32>().expect("Failed to parse min value");
                 Ok((ColumnDataType::Int(min), ColumnDataType::Int(max)))
             }
-            Err(_) => {
+            _ => {
                 let min = range[0].parse::<f32>().expect("Failed to parse min value");
                 let max = range[1].parse::<f32>().expect("Failed to parse min value");
                 Ok((ColumnDataType::Float(min), ColumnDataType::Float(max)))
@@ -174,9 +174,11 @@ mod tests {
     fn test_parse_range() {
         let range1 = "1:10";
         let range2 = "2.5:5.5";
+        let range3: &str = "100:1000.5";
 
         let parsed_range1 = Dataset::parse_range(range1).unwrap();
         let parsed_range2 = Dataset::parse_range(range2).unwrap();
+        let parsed_range3 = Dataset::parse_range(range3).unwrap();
 
         assert_eq!(
             parsed_range1,
@@ -186,6 +188,10 @@ mod tests {
             parsed_range2,
             (ColumnDataType::Float(2.5), ColumnDataType::Float(5.5))
         );
+        assert_eq!(
+            parsed_range3,
+            (ColumnDataType::Float(100.0), ColumnDataType::Float(1000.5))
+        )
     }
 
     #[test]
