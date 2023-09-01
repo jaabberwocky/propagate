@@ -5,7 +5,16 @@ use propagate::dataset::Dataset;
 #[command(
     author = "tobias@tobias.dev",
     version,
-    about = "Propagate: a simple synthetic data generator."
+    about = "
+    =====================================================
+    PPPP   RRRR    OOO   PPPP   A   GGGG   A   TTTTT EEEE
+    P   P  R   R  O   O  P   P A A  G     A A    T   E
+    PPPP   RRRR   O   O  PPPP  AAAA G  GG AAAA   T   EEEE
+    P      R  R   O   O  P    A   A G   G A   A  T   E
+    P      R   R   OOO   P    A   A  GGG  A   A  T   EEEE
+    =====================================================
+
+    Propagate: a simple synthetic data generator."
 )]
 struct Args {
     #[arg(short, long, help = "Column names to generate")]
