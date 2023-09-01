@@ -112,7 +112,10 @@ impl Dataset {
         }
 
         writer.flush()?;
-        println!("Successfully wrote to file {}", &self.output);
+        println!(
+            "Successfully {} wrote to file {}",
+            &self.num_rows, &self.output
+        );
         Ok(())
     }
 }
