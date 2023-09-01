@@ -30,7 +30,7 @@ impl Column {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug)]
 pub enum ColumnDataType {
     Int(i32),
     Float(f32),
