@@ -32,7 +32,6 @@ impl Dataset {
         let mut columns: Vec<Column> = Vec::new();
         for (i, name) in column_names.iter().enumerate() {
             let (min, max) = Dataset::parse_range(&ranges[i]).unwrap();
-            println!("{:?}", (&min, &max));
 
             let column = Column::new(name.to_string(), min, max);
             columns.push(column);

@@ -23,7 +23,7 @@ struct Args {
     #[arg(
         short,
         long,
-        help = "Ranges for each column separated by comma (e.g. 0:100,5:25))"
+        help = "Ranges for each column separated by comma (e.g. 0:100,5:25).\nIf ranges provided are less than columns, the first range will be used for all columns.\nPanics if ranges provided are more than columns."
     )]
     ranges: String,
 
@@ -52,6 +52,5 @@ fn main() {
         .collect();
 
     let dataset: Dataset = Dataset::build(colnames, ranges, args.num_rows, args.sep, args.output);
-    println!("{:?}", dataset);
     dataset.generate_dataset();
 }
