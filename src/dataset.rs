@@ -87,7 +87,6 @@ impl Dataset {
     pub fn generate_dataset(&self) {
         let mut generated_dataset: Vec<String> = Vec::new();
 
-        // add column names
         let column_header: Vec<String> =
             self.columns.iter().map(|c| c.get_name().clone()).collect();
         generated_dataset.push(column_header.join(&self.sep));
