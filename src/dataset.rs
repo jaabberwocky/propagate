@@ -45,7 +45,7 @@ impl Dataset {
         }
     }
 
-    fn parse_range(range: &str) -> Result<(ColumnDataType, ColumnDataType), &'static str> {
+    fn parse_range(range: &str) -> Result<(ColumnDataType, ColumnDataType), Box<dyn Error>> {
         let range: Vec<&str> = range.split(':').collect();
         match (range[0].parse::<i32>(), range[1].parse::<i32>()) {
             (Ok(_), Ok(_)) => {
