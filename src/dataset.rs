@@ -3,7 +3,6 @@ use csv::QuoteStyle;
 use rand::Rng;
 use std::error::Error;
 use std::fs::File;
-use std::io::BufWriter;
 
 #[derive(Debug)]
 pub struct Dataset {
@@ -118,11 +117,10 @@ impl Dataset {
 
     fn write_to_file(&self, generated_dataset: &[String]) -> Result<(), Box<dyn Error>> {
         let file = File::create(&self.output)?;
-        let buffered = BufWriter::new(file);
 
         let mut writer = csv::WriterBuilder::new()
             .quote_style(QuoteStyle::Never)
-            .from_writer(buffered);
+            .from_writer(file);
 
         for row in generated_dataset.iter() {
             let fields: Vec<&str> = row.split(&self.sep).collect();
