@@ -1,4 +1,4 @@
-# Propagate: Synthetic Data Generation CLI Tool
+# Propagate: Data Generation CLI Tool
 
 ```
     =====================================================
