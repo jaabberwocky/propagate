@@ -1,5 +1,5 @@
 use clap::Parser;
-use propagate::Dataset;
+use propagate::dataset::Dataset;
 
 #[derive(Debug, Parser)]
 #[command(
