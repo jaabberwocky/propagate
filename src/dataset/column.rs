@@ -35,7 +35,7 @@ impl Column {
     }
 }
 
-#[derive(Debug, PartialEq, PartialOrd)]
+#[derive(Debug, PartialEq, PartialOrd, Clone)]
 pub enum ColumnDataType {
     Int(i32),
     Float(f32),
@@ -54,4 +54,38 @@ impl fmt::Display for ColumnDataType {
 pub enum DatasetMode {
     Default,
     FirstRange,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_new_column_with_valid_types() {
+        let name = String::from("age");
+        let min = ColumnDataType::Int(0);
+        let max = ColumnDataType::Int(100);
+        let column = Column::new(name.clone(), min.clone(), max.clone());
+        assert_eq!(*column.get_name(), name);
+        assert_eq!(*column.get_min(), min);
+        assert_eq!(*column.get_max(), max);
+    }
+
+    #[test]
+    #[should_panic(expected = "Column min must be less than max")]
+    fn test_new_column_with_invalid_ranges() {
+        let name = String::from("temperature");
+        let min = ColumnDataType::Float(100.0);
+        let max = ColumnDataType::Float(50.0);
+        Column::new(name.clone(), min.clone(), max.clone());
+    }
+
+    #[test]
+    #[should_panic(expected = "Column min and max must be of the same type")]
+    fn test_new_column_with_invalid_types() {
+        let name = String::from("price");
+        let min = ColumnDataType::Int(0);
+        let max = ColumnDataType::Float(100.0);
+        Column::new(name.clone(), min.clone(), max.clone());
+    }
 }
