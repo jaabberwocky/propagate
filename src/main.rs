@@ -1,4 +1,5 @@
 use clap::Parser;
+use color_eyre::eyre::Result;
 use propagate::dataset::Dataset;
 
 #[derive(Debug, Parser)]
@@ -37,7 +38,8 @@ struct Args {
     sep: String,
 }
 
-fn main() {
+fn main() -> Result<()> {
+    color_eyre::install()?;
     let args: Args = Args::parse();
 
     let colnames: Vec<String> = args
@@ -53,4 +55,5 @@ fn main() {
 
     let dataset: Dataset = Dataset::build(colnames, ranges, args.num_rows, args.sep, args.output);
     dataset.generate_dataset();
+    Ok(())
 }
